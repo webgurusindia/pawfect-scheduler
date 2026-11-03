@@ -217,8 +217,8 @@ function openService(s) {
     <div class="field"><label>Name</label><input name="name" value="${esc(s?.name)}" required></div>
     <div class="field"><label>Short description</label><textarea name="description" rows="2">${esc(s?.description)}</textarea></div>
     <div class="field"><label>What's included (one item per line)</label><textarea name="includes" rows="4">${esc(s?.includes)}</textarea></div>
-    <div class="field"><label>Photo</label><input name="image" value="${esc(s?.image)}" placeholder="/images/my-photo.jpg or https://…">
-      <span class="muted" style="font-size:.85rem">Put photos in the <code>public/images</code> folder, then enter <code>/images/filename.jpg</code>.</span></div>
+    <div class="field"><label>Photo</label><input name="image" value="${esc(s?.image)}" placeholder="https://…">
+      <span class="muted" style="font-size:.85rem">Paste a link to a photo (https://…), e.g. from Unsplash, Google Photos or your Instagram.</span></div>
     <div class="grid2">
       <div class="field"><label>Duration (minutes)</label><input name="duration_min" type="number" min="5" max="600" step="5" value="${s?.duration_min ?? 60}" required></div>
       <div class="field"><label>Price (₹)</label><input name="price" type="number" min="0" step="0.01" value="${s ? s.price_cents / 100 : ''}" required></div>
