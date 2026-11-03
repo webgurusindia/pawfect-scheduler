@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pawfect Grooming — Book an Appointment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="#"><span>🐾</span><b class="biz-name">Pawfect Grooming</b></a>
+      <nav>
+        <a href="#services">Services</a>
+        <a href="#manage">My booking</a>
+        <a href="#book" class="btn small">Book now</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="container">
+      <h1>Fresh, fluffy &amp; happy pups.</h1>
+      <p>Gentle, professional grooming for dogs of every size. Pick a service, choose a time that suits you, and we'll take care of the rest.</p>
+      <div class="actions">
+        <a href="#book" class="btn">Book an appointment</a>
+        <a href="#services" class="btn ghost">View services</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="services">
+    <div class="container">
+      <div class="section-title"><h2>Our services</h2><p>Transparent pricing, no surprises.</p></div>
+      <div class="services-grid" id="servicesGrid"><p class="muted">Loading…</p></div>
+    </div>
+  </section>
+
+  <section id="book" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="container">
+      <div class="section-title"><h2>Book an appointment</h2><p>Takes less than a minute.</p></div>
+      <div class="booking card">
+        <div class="steps" id="steps"><div></div><div></div><div></div><div></div></div>
+
+        <!-- Step 1: service -->
+        <div class="step" data-step="1">
+          <h3>1. Choose a service</h3>
+          <div class="service-pick" id="servicePick"></div>
+          <div class="step-actions"><span></span><button class="btn" id="toStep2" disabled>Next</button></div>
+        </div>
+
+        <!-- Step 2: date & time -->
+        <div class="step hidden" data-step="2">
+          <h3>2. Pick a date &amp; time</h3>
+          <div class="two-col">
+            <div>
+              <div class="cal-head">
+                <button class="btn ghost small" id="prevMonth" aria-label="Previous month">‹</button>
+                <b id="monthLabel"></b>
+                <button class="btn ghost small" id="nextMonth" aria-label="Next month">›</button>
+              </div>
+              <div class="calendar" id="calendar"></div>
+            </div>
+            <div>
+              <p class="muted" id="slotsLabel">Select a date to see available times.</p>
+              <div class="slots" id="slots"></div>
+            </div>
+          </div>
+          <div class="step-actions">
+            <button class="btn ghost" data-back="1">Back</button>
+            <button class="btn" id="toStep3" disabled>Next</button>
+          </div>
+        </div>
+
+        <!-- Step 3: details -->
+        <form class="step hidden" data-step="3" id="detailsForm" novalidate>
+          <h3>3. Your details</h3>
+          <div class="summary" id="summary"></div>
+          <div class="grid2">
+            <div class="field"><label for="customer_name">Your name *</label><input id="customer_name" name="customer_name" autocomplete="name" required></div>
+            <div class="field"><label for="phone">Phone *</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+          </div>
+          <div class="field"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+          <div class="grid2">
+            <div class="field"><label for="dog_name">Dog's name *</label><input id="dog_name" name="dog_name" required></div>
+            <div class="field"><label for="breed">Breed</label><input id="breed" name="breed" placeholder="e.g. Cockapoo"></div>
+          </div>
+          <div class="field">
+            <label for="dog_size">Size</label>
+            <select id="dog_size" name="dog_size">
+              <option value="">Select…</option>
+              <option>Small (under 10kg)</option>
+              <option>Medium (10–25kg)</option>
+              <option>Large (25–40kg)</option>
+              <option>Giant (40kg+)</option>
+            </select>
+          </div>
+          <div class="field"><label for="notes">Anything we should know?</label><textarea id="notes" name="notes" rows="3" placeholder="Allergies, anxiety, matting, preferred cut…"></textarea></div>
+          <p class="error" id="bookError"></p>
+          <div class="step-actions">
+            <button type="button" class="btn ghost" data-back="2">Back</button>
+            <button class="btn" type="submit" id="submitBtn">Confirm booking</button>
+          </div>
+        </form>
+
+        <!-- Step 4: done -->
+        <div class="step hidden" data-step="4">
+          <div class="confirm-icon">🎉</div>
+          <h3 style="justify-content:center">You're booked!</h3>
+          <p style="text-align:center" id="confirmText"></p>
+          <p style="text-align:center" class="muted">Your booking reference — keep it to view or cancel your appointment:</p>
+          <p class="ref" id="confirmRef"></p>
+          <div class="step-actions" style="justify-content:center"><button class="btn ghost" id="bookAnother">Book another</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="manage">
+    <div class="container two-col">
+      <div class="card">
+        <h2>Manage my booking</h2>
+        <p class="muted">Enter your reference and email to view or cancel.</p>
+        <form id="lookupForm">
+          <div class="grid2">
+            <div class="field"><label for="lref">Reference</label><input id="lref" required style="text-transform:uppercase"></div>
+            <div class="field"><label for="lemail">Email</label><input id="lemail" type="email" required></div>
+          </div>
+          <button class="btn">Find booking</button>
+        </form>
+        <p class="error" id="lookupError"></p>
+        <div id="lookupResult"></div>
+      </div>
+      <div class="card">
+        <h2>Opening hours</h2>
+        <ul class="hours-list" id="hoursList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>© <span id="year"></span> <span class="biz-name">Pawfect Grooming</span> · <a href="/admin">Owner login</a></footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

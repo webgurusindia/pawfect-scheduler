@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Owner Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Login -->
+  <div class="login-wrap hidden" id="loginView">
+    <form class="card" id="loginForm" style="width:min(380px,100%)">
+      <h2>🐾 Owner login</h2>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required autofocus></div>
+      <p class="error" id="loginError"></p>
+      <button class="btn" style="width:100%">Sign in</button>
+    </form>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="admin-shell hidden" id="appView">
+    <aside class="sidebar">
+      <div class="logo">🐾 <span class="biz-name" style="font-size:1rem">Dashboard</span></div>
+      <button data-tab="schedule" class="active">📅 Schedule</button>
+      <button data-tab="services">✂️ Services</button>
+      <button data-tab="hours">🕘 Hours &amp; closures</button>
+      <button data-tab="settings">⚙️ Settings</button>
+      <button id="logoutBtn">↩ Sign out</button>
+    </aside>
+
+    <main class="main">
+      <!-- Schedule -->
+      <div data-panel="schedule">
+        <h1>Schedule</h1>
+        <div class="stats" id="stats"></div>
+        <div class="toolbar">
+          <button class="btn ghost small" id="prevRange">‹</button>
+          <input type="date" id="dateFrom">
+          <button class="btn ghost small" id="nextRange">›</button>
+          <button class="btn ghost small" id="todayBtn">Today</button>
+          <select id="rangeSel"><option value="1">Day</option><option value="7" selected>Week</option><option value="30">30 days</option></select>
+          <select id="statusSel">
+            <option value="">All statuses</option><option value="booked">Booked (new)</option><option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="no_show">No-show</option>
+          </select>
+          <input type="search" id="searchBox" placeholder="Search name, dog, phone, ref…">
+          <button class="btn small" id="newApptBtn">+ New appointment</button>
+        </div>
+        <div id="apptList"></div>
+      </div>
+
+      <!-- Services -->
+      <div data-panel="services" class="hidden">
+        <h1>Services</h1>
+        <div class="toolbar"><button class="btn small" id="newServiceBtn">+ Add service</button></div>
+        <div class="card table-wrap"><table id="servicesTable"></table></div>
+      </div>
+
+      <!-- Hours -->
+      <div data-panel="hours" class="hidden">
+        <h1>Hours &amp; closures</h1>
+        <div class="two-col">
+          <form class="card" id="hoursForm">
+            <h3>Weekly opening hours</h3>
+            <table id="hoursTable"></table>
+            <p class="error" id="hoursError"></p>
+            <button class="btn">Save hours</button>
+          </form>
+          <div class="card">
+            <h3>Closed dates</h3>
+            <p class="muted">Holidays, vacations, sick days. Customers can't book these dates.</p>
+            <form id="blockForm" class="toolbar">
+              <input type="date" id="blockDate" required>
+              <input id="blockReason" placeholder="Reason (optional)">
+              <button class="btn small">Add</button>
+            </form>
+            <div id="blockedList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div data-panel="settings" class="hidden">
+        <h1>Settings</h1>
+        <form class="card" id="settingsForm" style="max-width:520px">
+          <div class="field"><label for="business_name">Business name</label><input id="business_name" name="business_name"></div>
+          <div class="grid2">
+            <div class="field"><label for="slot_interval_min">Start times every (min)</label><input id="slot_interval_min" name="slot_interval_min" type="number" min="5" max="240"></div>
+            <div class="field"><label for="capacity">Dogs at the same time</label><input id="capacity" name="capacity" type="number" min="1" max="20"></div>
+            <div class="field"><label for="min_notice_hours">Minimum notice (hours)</label><input id="min_notice_hours" name="min_notice_hours" type="number" min="0" max="720"></div>
+            <div class="field"><label for="max_days_ahead">Book up to (days ahead)</label><input id="max_days_ahead" name="max_days_ahead" type="number" min="1" max="365"></div>
+          </div>
+          <p class="muted">"Dogs at the same time" = number of groomers/tables. Set to 2 if you have a second groomer.</p>
+          <p class="error" id="settingsError"></p>
+          <button class="btn">Save settings</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="apptDialog"><div class="card" id="apptDetail"></div></dialog>
+  <dialog id="newApptDialog"><form class="card" id="newApptForm"></form></dialog>
+  <dialog id="serviceDialog"><form class="card" id="serviceForm"></form></dialog>
+
+  <script src="/admin.js"></script>
+</body>
+</html>

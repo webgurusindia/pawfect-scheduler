@@ -1,0 +1,17 @@
+{
+  "name": "pawfect-scheduler",
+  "version": "1.0.0",
+  "description": "Dog grooming appointment scheduler",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --watch --disable-warning=ExperimentalWarning server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.22.3"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}
