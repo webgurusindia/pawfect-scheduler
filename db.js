@@ -8,7 +8,8 @@ const path = require('path');
 const fs = require('fs');
 
 const PG_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-const dialect = PG_URL ? 'postgres' : 'sqlite';
+// On Vercel the file system is read-only and wiped between requests, so SQLite can't be used there.
+const dialect = PG_URL ? 'postgres' : process.env.VERCEL ? 'none' : 'sqlite';
 
 const img = (id, w = 800, h = 600) => `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&q=72&auto=format`;
 
@@ -127,6 +128,15 @@ if (dialect === 'postgres') {
       } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e; } finally { c.release(); }
     },
   };
+} else if (dialect === 'none') {
+  // Keep the site up (pages still load) and give a clear message instead of crashing.
+  const fail = async () => {
+    const e = new Error('The booking database is not connected yet. Please try again later.');
+    e.status = 503; e.expose = true;
+    console.error('No database configured: connect Neon Postgres in Vercel → Storage (sets DATABASE_URL), then redeploy.');
+    throw e;
+  };
+  driver = { query: fail, get: fail, run: fail, tx: fail };
 } else {
   const { DatabaseSync } = require('node:sqlite');
   const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'scheduler.db');
