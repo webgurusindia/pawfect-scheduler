@@ -1,7 +1,8 @@
 // Customer-facing booking site
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const money = (c) => '$' + (c / 100).toFixed(c % 100 ? 2 : 0);
+// Prices are stored in paise (1/100 rupee) and shown as ₹1,999 with Indian digit grouping.
+const money = (c) => '₹' + (c / 100).toLocaleString('en-IN', { maximumFractionDigits: 2 });
 const dur = (m) => (m >= 60 ? `${Math.floor(m / 60)}h${m % 60 ? ' ' + (m % 60) + 'm' : ''}` : `${m} min`);
 const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

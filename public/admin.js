@@ -2,7 +2,8 @@
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const money = (c) => '$' + (c / 100).toFixed(2);
+// Prices are stored in paise (1/100 rupee).
+const money = (c) => '₹' + (c / 100).toLocaleString('en-IN', { maximumFractionDigits: 2 });
 const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const addDays = (s, n) => { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() + n); return ymd(d); };
 const prettyDate = (s) => new Date(s + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
@@ -220,7 +221,7 @@ function openService(s) {
       <span class="muted" style="font-size:.85rem">Put photos in the <code>public/images</code> folder, then enter <code>/images/filename.jpg</code>.</span></div>
     <div class="grid2">
       <div class="field"><label>Duration (minutes)</label><input name="duration_min" type="number" min="5" max="600" step="5" value="${s?.duration_min ?? 60}" required></div>
-      <div class="field"><label>Price ($)</label><input name="price" type="number" min="0" step="0.01" value="${s ? (s.price_cents / 100).toFixed(2) : ''}" required></div>
+      <div class="field"><label>Price (₹)</label><input name="price" type="number" min="0" step="0.01" value="${s ? s.price_cents / 100 : ''}" required></div>
       <div class="field"><label>Display order</label><input name="sort_order" type="number" value="${s?.sort_order ?? 0}"></div>
       <div class="field"><label>Visible to customers</label><select name="active"><option value="1">Yes</option><option value="0" ${s && !s.active ? 'selected' : ''}>No</option></select></div>
     </div>

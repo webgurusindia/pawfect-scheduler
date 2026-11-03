@@ -82,12 +82,12 @@ if (db.prepare('SELECT COUNT(*) AS n FROM business_hours').get().n === 0) {
 if (db.prepare('SELECT COUNT(*) AS n FROM services').get().n === 0) {
   const ins = db.prepare('INSERT INTO services (name, description, duration_min, price_cents, sort_order) VALUES (?, ?, ?, ?, ?)');
   [
-    ['Bath & Brush', 'Warm bath, blow-dry, thorough brush-out, ear cleaning and a spritz of cologne.', 60, 4500],
-    ['Full Groom', 'Everything in Bath & Brush plus a breed-standard or custom haircut and nail trim.', 120, 8500],
-    ['Puppy Intro', 'A gentle first visit for pups under 6 months: short bath, brush and lots of treats.', 45, 3500],
-    ['Nail Trim & File', 'Quick clip and smooth file. Walk-in friendly.', 15, 1500],
-    ['De-shedding Treatment', 'Special shampoo, conditioner and undercoat removal to cut shedding by up to 80%.', 90, 7000],
-    ['Teeth Brushing', 'Enzymatic toothpaste brush for fresher breath.', 15, 1200],
+    ['Bath & Brush', 'Warm bath, blow-dry, thorough brush-out, ear cleaning and a spritz of cologne.', 60, 99900],
+    ['Full Groom', 'Everything in Bath & Brush plus a breed-standard or custom haircut and nail trim.', 120, 199900],
+    ['Puppy Intro', 'A gentle first visit for pups under 6 months: short bath, brush and lots of treats.', 45, 79900],
+    ['Nail Trim & File', 'Quick clip and smooth file. Walk-in friendly.', 15, 29900],
+    ['De-shedding Treatment', 'Special shampoo, conditioner and undercoat removal to cut shedding by up to 80%.', 90, 179900],
+    ['Teeth Brushing', 'Enzymatic toothpaste brush for fresher breath.', 15, 24900],
   ].forEach((s, i) => ins.run(...s, i));
 }
 
@@ -102,23 +102,23 @@ if (version < 2) {
   // Fill details for the starter services (matched by name, only if still blank),
   // and add the new starter services if a service with that name doesn't exist yet.
   const starter = [
-    ['Bath & Brush', 'Warm bath, blow-dry, thorough brush-out, ear cleaning and a spritz of cologne.', 60, 4500,
+    ['Bath & Brush', 'Warm bath, blow-dry, thorough brush-out, ear cleaning and a spritz of cologne.', 60, 99900,
       '/images/svc-bath.jpg', 'Warm hydro-massage bath\nGentle shampoo matched to coat type\nHand blow-dry & full brush-out\nEar cleaning\nBandana or bow + finishing spritz'],
-    ['Full Groom', 'Everything in Bath & Brush plus a breed-standard or custom haircut and nail trim.', 120, 8500,
+    ['Full Groom', 'Everything in Bath & Brush plus a breed-standard or custom haircut and nail trim.', 120, 199900,
       '/images/svc-full-groom.jpg', 'Everything in Bath & Brush\nBreed-standard or custom haircut\nFace, feet & sanitary tidy\nNail trim & file\nPaw pad trim'],
-    ['Puppy Intro', 'A gentle first visit for pups under 6 months: short bath, brush and lots of treats.', 45, 3500,
+    ['Puppy Intro', 'A gentle first visit for pups under 6 months: short bath, brush and lots of treats.', 45, 79900,
       '/images/svc-puppy.jpg', 'Short, positive first bath\nIntroduction to dryer & clippers\nLight face and feet tidy\nNail tip trim\nLots of treats & praise'],
-    ['Nail Trim & File', 'Quick clip and smooth file. Walk-in friendly.', 15, 1500,
+    ['Nail Trim & File', 'Quick clip and smooth file. Walk-in friendly.', 15, 29900,
       '/images/svc-nails.jpg', 'Clip to a healthy length\nSmooth file to prevent snagging\nDew claws included'],
-    ['De-shedding Treatment', 'Special shampoo, conditioner and undercoat removal to cut shedding by up to 80%.', 90, 7000,
+    ['De-shedding Treatment', 'Special shampoo, conditioner and undercoat removal to cut shedding by up to 80%.', 90, 179900,
       '/images/svc-deshed.jpg', 'De-shedding shampoo & conditioner\nHigh-velocity undercoat blow-out\nUndercoat rake & brush-out\nEar cleaning\nGreat for Huskies, Labs, Shepherds & Goldens'],
-    ['Teeth Brushing', 'Enzymatic toothpaste brush for fresher breath.', 15, 1200,
+    ['Teeth Brushing', 'Enzymatic toothpaste brush for fresher breath.', 15, 24900,
       '/images/svc-teeth.jpg', 'Dog-safe enzymatic toothpaste\nGentle finger or soft-brush clean\nFresher breath'],
-    ['Spa Day Package', 'Our most pampering visit: full groom plus blueberry facial, paw balm and a conditioning mask.', 150, 11000,
+    ['Spa Day Package', 'Our most pampering visit: full groom plus blueberry facial, paw balm and a conditioning mask.', 150, 299900,
       '/images/svc-spa.jpg', 'Everything in Full Groom\nBlueberry facial (tear-stain friendly)\nDeep-conditioning coat mask\nPaw pad balm\nTeeth brushing'],
-    ['Paw & Pad Care', 'A tidy-up for busy paws: pad trim, nail trim and a soothing balm.', 30, 2500,
+    ['Paw & Pad Care', 'A tidy-up for busy paws: pad trim, nail trim and a soothing balm.', 30, 49900,
       '/images/svc-paw.jpg', 'Fur trimmed between pads\nNail trim & file\nMoisturising paw balm'],
-    ['Flea & Tick Bath', 'Medicated bath with a vet-recommended shampoo and a careful comb-through.', 60, 5500,
+    ['Flea & Tick Bath', 'Medicated bath with a vet-recommended shampoo and a careful comb-through.', 60, 129900,
       '/images/svc-flea.jpg', 'Vet-recommended medicated shampoo\nFine-tooth flea comb-through\nBlow-dry & brush\nAdvice on ongoing prevention'],
   ];
   const find = db.prepare('SELECT * FROM services WHERE name = ?');
@@ -131,6 +131,28 @@ if (version < 2) {
   const ins = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
   ins.run('phone', ''); ins.run('email', ''); ins.run('address', '');
   db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('schema_version', '2')").run();
+}
+
+// ---- Migration v3: prices in Indian Rupees (stored in paise) ----
+// Starter services still at their original dollar price are moved to the INR starter price.
+// Prices the owner has already changed are left alone.
+if (Number(db.prepare("SELECT value FROM settings WHERE key = 'schema_version'").get()?.value || 1) < 3) {
+  const toInr = {
+    'Bath & Brush': [4500, 99900],
+    'Full Groom': [8500, 199900],
+    'Puppy Intro': [3500, 79900],
+    'Nail Trim & File': [1500, 29900],
+    'De-shedding Treatment': [7000, 179900],
+    'Teeth Brushing': [1200, 24900],
+    'Spa Day Package': [11000, 299900],
+    'Paw & Pad Care': [2500, 49900],
+    'Flea & Tick Bath': [5500, 129900],
+  };
+  const upd = db.prepare('UPDATE services SET price_cents = ? WHERE name = ? AND price_cents = ?');
+  const updAppts = db.prepare(
+    'UPDATE appointments SET price_cents = ? WHERE price_cents = ? AND service_id IN (SELECT id FROM services WHERE name = ?)');
+  for (const [name, [oldUsd, inr]] of Object.entries(toInr)) { upd.run(inr, name, oldUsd); updAppts.run(inr, oldUsd, name); }
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('schema_version', '3')").run();
 }
 
 function getSettings() {
