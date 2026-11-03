@@ -87,6 +87,11 @@
         <form class="card" id="settingsForm" style="max-width:520px">
           <div class="field"><label for="business_name">Business name</label><input id="business_name" name="business_name"></div>
           <div class="grid2">
+            <div class="field"><label for="phone">Phone (shown on website)</label><input id="phone" name="phone" type="tel"></div>
+            <div class="field"><label for="email">Email (shown on website)</label><input id="email" name="email" type="email"></div>
+          </div>
+          <div class="field"><label for="address">Address (shown on website)</label><input id="address" name="address" placeholder="123 Main St, Springfield"></div>
+          <div class="grid2">
             <div class="field"><label for="slot_interval_min">Start times every (min)</label><input id="slot_interval_min" name="slot_interval_min" type="number" min="5" max="240"></div>
             <div class="field"><label for="capacity">Dogs at the same time</label><input id="capacity" name="capacity" type="number" min="1" max="20"></div>
             <div class="field"><label for="min_notice_hours">Minimum notice (hours)</label><input id="min_notice_hours" name="min_notice_hours" type="number" min="0" max="720"></div>

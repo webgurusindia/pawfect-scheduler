@@ -91,6 +91,48 @@ if (db.prepare('SELECT COUNT(*) AS n FROM services').get().n === 0) {
   ].forEach((s, i) => ins.run(...s, i));
 }
 
+// ---- Migration v2: richer service details, photos, contact info ----
+// Runs once. Safe on databases created by the first version.
+const cols = db.prepare('PRAGMA table_info(services)').all().map((c) => c.name);
+if (!cols.includes('includes')) db.exec("ALTER TABLE services ADD COLUMN includes TEXT NOT NULL DEFAULT ''");
+if (!cols.includes('image')) db.exec("ALTER TABLE services ADD COLUMN image TEXT NOT NULL DEFAULT ''");
+
+const version = Number(db.prepare("SELECT value FROM settings WHERE key = 'schema_version'").get()?.value || 1);
+if (version < 2) {
+  // Fill details for the starter services (matched by name, only if still blank),
+  // and add the new starter services if a service with that name doesn't exist yet.
+  const starter = [
+    ['Bath & Brush', 'Warm bath, blow-dry, thorough brush-out, ear cleaning and a spritz of cologne.', 60, 4500,
+      '/images/svc-bath.jpg', 'Warm hydro-massage bath\nGentle shampoo matched to coat type\nHand blow-dry & full brush-out\nEar cleaning\nBandana or bow + finishing spritz'],
+    ['Full Groom', 'Everything in Bath & Brush plus a breed-standard or custom haircut and nail trim.', 120, 8500,
+      '/images/svc-full-groom.jpg', 'Everything in Bath & Brush\nBreed-standard or custom haircut\nFace, feet & sanitary tidy\nNail trim & file\nPaw pad trim'],
+    ['Puppy Intro', 'A gentle first visit for pups under 6 months: short bath, brush and lots of treats.', 45, 3500,
+      '/images/svc-puppy.jpg', 'Short, positive first bath\nIntroduction to dryer & clippers\nLight face and feet tidy\nNail tip trim\nLots of treats & praise'],
+    ['Nail Trim & File', 'Quick clip and smooth file. Walk-in friendly.', 15, 1500,
+      '/images/svc-nails.jpg', 'Clip to a healthy length\nSmooth file to prevent snagging\nDew claws included'],
+    ['De-shedding Treatment', 'Special shampoo, conditioner and undercoat removal to cut shedding by up to 80%.', 90, 7000,
+      '/images/svc-deshed.jpg', 'De-shedding shampoo & conditioner\nHigh-velocity undercoat blow-out\nUndercoat rake & brush-out\nEar cleaning\nGreat for Huskies, Labs, Shepherds & Goldens'],
+    ['Teeth Brushing', 'Enzymatic toothpaste brush for fresher breath.', 15, 1200,
+      '/images/svc-teeth.jpg', 'Dog-safe enzymatic toothpaste\nGentle finger or soft-brush clean\nFresher breath'],
+    ['Spa Day Package', 'Our most pampering visit: full groom plus blueberry facial, paw balm and a conditioning mask.', 150, 11000,
+      '/images/svc-spa.jpg', 'Everything in Full Groom\nBlueberry facial (tear-stain friendly)\nDeep-conditioning coat mask\nPaw pad balm\nTeeth brushing'],
+    ['Paw & Pad Care', 'A tidy-up for busy paws: pad trim, nail trim and a soothing balm.', 30, 2500,
+      '/images/svc-paw.jpg', 'Fur trimmed between pads\nNail trim & file\nMoisturising paw balm'],
+    ['Flea & Tick Bath', 'Medicated bath with a vet-recommended shampoo and a careful comb-through.', 60, 5500,
+      '/images/svc-flea.jpg', 'Vet-recommended medicated shampoo\nFine-tooth flea comb-through\nBlow-dry & brush\nAdvice on ongoing prevention'],
+  ];
+  const find = db.prepare('SELECT * FROM services WHERE name = ?');
+  const fill = db.prepare("UPDATE services SET includes = CASE WHEN includes = '' THEN ? ELSE includes END, image = CASE WHEN image = '' THEN ? ELSE image END WHERE id = ?");
+  const add = db.prepare('INSERT INTO services (name, description, duration_min, price_cents, image, includes, sort_order) VALUES (?,?,?,?,?,?,?)');
+  starter.forEach(([name, desc, dur, price, img, inc], i) => {
+    const s = find.get(name);
+    if (s) fill.run(inc, img, s.id); else add.run(name, desc, dur, price, img, inc, i);
+  });
+  const ins = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
+  ins.run('phone', ''); ins.run('email', ''); ins.run('address', '');
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('schema_version', '2')").run();
+}
+
 function getSettings() {
   const out = {};
   for (const r of db.prepare('SELECT key, value FROM settings').all()) out[r.key] = r.value;

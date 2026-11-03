@@ -22,22 +22,43 @@ function goStep(n) {
   document.querySelectorAll('#steps div').forEach((el, i) => el.classList.toggle('done', i < n));
 }
 
+const lines = (t) => String(t || '').split('\n').map((l) => l.trim()).filter(Boolean);
+
 function renderServices() {
   $('#servicesGrid').innerHTML = state.services.map((s) => `
-    <div class="card service-card">
-      <h3>${esc(s.name)}</h3>
-      <p>${esc(s.description)}</p>
-      <div class="service-meta">
-        <div><span class="price">${money(s.price_cents)}</span> <span class="chip">${dur(s.duration_min)}</span></div>
-        <button class="btn small" data-book="${s.id}">Book</button>
+    <article class="card service-card">
+      <div class="photo">
+        ${s.image ? `<img src="${esc(s.image)}" alt="${esc(s.name)}" loading="lazy">` : ''}
+        <span class="chip">⏱ ${dur(s.duration_min)}</span>
       </div>
-    </div>`).join('') || '<p class="muted">No services available right now.</p>';
+      <div class="body">
+        <h3>${esc(s.name)}</h3>
+        <p class="desc">${esc(s.description)}</p>
+        ${lines(s.includes).length ? `<ul class="includes">${lines(s.includes).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>` : '<div style="flex:1"></div>'}
+        <div class="service-meta">
+          <span class="price"><small>from </small>${money(s.price_cents)}</span>
+          <button class="btn small" data-book="${s.id}">Book this</button>
+        </div>
+      </div>
+    </article>`).join('') || '<p class="muted">No services available right now.</p>';
 
   $('#servicePick').innerHTML = state.services.map((s) => `
     <button type="button" class="service-option" data-id="${s.id}">
-      <span><b>${esc(s.name)}</b><br><span class="muted">${dur(s.duration_min)}</span></span>
+      <span class="opt-main">${s.image ? `<img src="${esc(s.image)}" alt="">` : ''}
+        <span><b>${esc(s.name)}</b><br><span class="muted">${dur(s.duration_min)}</span></span></span>
       <span class="price">${money(s.price_cents)}</span>
     </button>`).join('');
+}
+
+function renderContact() {
+  const c = state.config;
+  const items = [
+    c.address && `<li><span>📍</span><a href="https://maps.google.com/?q=${encodeURIComponent(c.address)}" target="_blank" rel="noopener">${esc(c.address)}</a></li>`,
+    c.phone && `<li><span>📞</span><a href="tel:${esc(c.phone.replace(/[^+\d]/g, ''))}">${esc(c.phone)}</a></li>`,
+    c.email && `<li><span>✉️</span><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li>`,
+  ].filter(Boolean);
+  if (items.length) $('#contactList').innerHTML = items.join('') + '<li><span>📅</span><a href="#book">Book online any time</a></li>';
+  else $('#contactCard').classList.add('hidden');
 }
 
 function selectService(id) {
@@ -168,6 +189,6 @@ async function cancelBooking() {
     [state.config, state.services] = await Promise.all([api('/api/config'), api('/api/services')]);
     document.querySelectorAll('.biz-name').forEach((el) => (el.textContent = state.config.business_name));
     document.title = `${state.config.business_name} — Book an Appointment`;
-    renderServices(); renderHours(); goStep(1);
+    renderServices(); renderHours(); renderContact(); goStep(1);
   } catch { $('#servicesGrid').innerHTML = '<p class="error">Could not load services. Please refresh.</p>'; }
 })();

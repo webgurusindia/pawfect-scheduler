@@ -200,7 +200,8 @@ async function loadServices() {
   services = await api('/services');
   $('#servicesTable').innerHTML = `<tr><th>Service</th><th>Duration</th><th>Price</th><th>Status</th><th></th></tr>` +
     services.map((s) => `<tr>
-      <td><b>${esc(s.name)}</b><br><span class="muted">${esc(s.description)}</span></td>
+      <td style="display:flex;gap:12px;align-items:start">${s.image ? `<img src="${esc(s.image)}" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:10px;flex:none">` : ''}
+        <span><b>${esc(s.name)}</b><br><span class="muted">${esc(s.description)}</span></span></td>
       <td>${s.duration_min} min</td><td>${money(s.price_cents)}</td>
       <td>${s.active ? '<span class="badge confirmed">Live</span>' : '<span class="badge completed">Hidden</span>'}</td>
       <td><button class="btn ghost small" data-edit="${s.id}">Edit</button></td></tr>`).join('');
@@ -213,7 +214,10 @@ function openService(s) {
   f.innerHTML = `
     <h2>${s ? 'Edit service' : 'New service'}</h2>
     <div class="field"><label>Name</label><input name="name" value="${esc(s?.name)}" required></div>
-    <div class="field"><label>Description</label><textarea name="description" rows="3">${esc(s?.description)}</textarea></div>
+    <div class="field"><label>Short description</label><textarea name="description" rows="2">${esc(s?.description)}</textarea></div>
+    <div class="field"><label>What's included (one item per line)</label><textarea name="includes" rows="4">${esc(s?.includes)}</textarea></div>
+    <div class="field"><label>Photo</label><input name="image" value="${esc(s?.image)}" placeholder="/images/my-photo.jpg or https://…">
+      <span class="muted" style="font-size:.85rem">Put photos in the <code>public/images</code> folder, then enter <code>/images/filename.jpg</code>.</span></div>
     <div class="grid2">
       <div class="field"><label>Duration (minutes)</label><input name="duration_min" type="number" min="5" max="600" step="5" value="${s?.duration_min ?? 60}" required></div>
       <div class="field"><label>Price ($)</label><input name="price" type="number" min="0" step="0.01" value="${s ? (s.price_cents / 100).toFixed(2) : ''}" required></div>
@@ -234,7 +238,7 @@ function openService(s) {
   };
   f.onsubmit = async (e) => {
     e.preventDefault();
-    const body = { name: f.name.value, description: f.description.value, duration_min: Number(f.duration_min.value),
+    const body = { name: f.name.value, description: f.description.value, includes: f.includes.value, image: f.image.value.trim(), duration_min: Number(f.duration_min.value),
       price_cents: Math.round(Number(f.price.value) * 100), sort_order: Number(f.sort_order.value), active: f.active.value === '1' };
     try { await api(s ? '/services/' + s.id : '/services', { method: s ? 'PUT' : 'POST', body }); $('#serviceDialog').close(); toast('Saved'); loadServices(); }
     catch (err) { $('#serviceError').textContent = err.message; }

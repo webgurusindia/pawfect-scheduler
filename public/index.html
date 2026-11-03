@@ -4,43 +4,139 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pawfect Grooming — Book an Appointment</title>
+  <meta name="description" content="Gentle, one-on-one dog grooming. Browse services and prices and book online in under a minute.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <a class="logo" href="#"><span>🐾</span><b class="biz-name">Pawfect Grooming</b></a>
+      <a class="logo" href="#top"><span>🐾</span><b class="biz-name">Pawfect Grooming</b></a>
       <nav>
         <a href="#services">Services</a>
+        <a href="#why">Why us</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#faq">FAQ</a>
         <a href="#manage">My booking</a>
         <a href="#book" class="btn small">Book now</a>
       </nav>
     </div>
   </header>
 
-  <div class="hero">
-    <div class="container">
-      <h1>Fresh, fluffy &amp; happy pups.</h1>
-      <p>Gentle, professional grooming for dogs of every size. Pick a service, choose a time that suits you, and we'll take care of the rest.</p>
-      <div class="actions">
-        <a href="#book" class="btn">Book an appointment</a>
-        <a href="#services" class="btn ghost">View services</a>
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Gentle, one-on-one dog grooming</span>
+        <h1>Fresh, fluffy &amp; <em>happy</em> pups.</h1>
+        <p>A calm, cage-free salon where your dog gets our full attention from start to finish. Pick a service, choose a time, and we'll take care of the rest.</p>
+        <div class="actions">
+          <a href="#book" class="btn big">Book an appointment</a>
+          <a href="#services" class="btn ghost big">See services &amp; prices</a>
+        </div>
+        <ul class="trust">
+          <li>✓ One dog at a time</li>
+          <li>✓ No cages, no sedatives</li>
+          <li>✓ Gentle, natural products</li>
+        </ul>
+      </div>
+      <div class="hero-photo">
+        <img src="/images/hero-grooming.jpg" alt="A golden retriever being brushed by a groomer" width="1400" height="933">
+        <div class="float-card fc-1"><span>📸</span><div><b>Photo update</b><small>when your pup is ready</small></div></div>
+        <div class="float-card fc-2"><span>🧘</span><div><b>Fear-free handling</b><small>calm, patient, positive</small></div></div>
       </div>
     </div>
   </div>
 
-  <section id="services">
+  <!-- WHY US -->
+  <section id="why">
     <div class="container">
-      <div class="section-title"><h2>Our services</h2><p>Transparent pricing, no surprises.</p></div>
+      <div class="section-title"><span class="eyebrow">What makes us different</span><h2>Grooming the way your dog would choose it</h2>
+        <p>We built our salon around one idea: a groom should feel like a treat, not an ordeal.</p></div>
+      <div class="features">
+        <div class="feature"><div class="icon">🐕</div><h3>One dog at a time</h3><p>Your dog is never left waiting in a noisy room full of other dogs. One groomer, one dog, start to finish.</p></div>
+        <div class="feature"><div class="icon">🚫</div><h3>Cage-free &amp; no heat dryers</h3><p>No crates and no unattended cage dryers. We hand-dry with gentle, temperature-controlled air.</p></div>
+        <div class="feature"><div class="icon">🌿</div><h3>Natural, skin-friendly products</h3><p>Soap-free shampoos and conditioners matched to coat type, with hypoallergenic options for sensitive skin.</p></div>
+        <div class="feature"><div class="icon">🧘</div><h3>Fear-free approach</h3><p>Breaks when needed, lots of treats, and we never force a nervous dog. Anxious and senior dogs are welcome.</p></div>
+        <div class="feature"><div class="icon">📸</div><h3>Photo when they're ready</h3><p>We send you a photo of your freshly groomed pup so you know exactly when to come for pick-up.</p></div>
+        <div class="feature"><div class="icon">💬</div><h3>Honest, upfront pricing</h3><p>Prices are on this page. If your dog needs anything extra, like de-matting, we'll call you first.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="tint">
+    <div class="container">
+      <div class="section-title"><span class="eyebrow">Services &amp; prices</span><h2>Something for every coat</h2>
+        <p>Every visit includes a health check of skin, ears and paws. Prices are a starting point for a typical coat.</p></div>
       <div class="services-grid" id="servicesGrid"><p class="muted">Loading…</p></div>
     </div>
   </section>
 
-  <section id="book" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <!-- HOW IT WORKS -->
+  <section>
     <div class="container">
-      <div class="section-title"><h2>Book an appointment</h2><p>Takes less than a minute.</p></div>
+      <div class="section-title"><span class="eyebrow">How it works</span><h2>Booked in under a minute</h2></div>
+      <div class="how">
+        <div><span class="num">1</span><h3>Pick a service</h3><p>Choose from baths, full grooms, puppy visits and quick add-ons.</p></div>
+        <div><span class="num">2</span><h3>Choose a time</h3><p>See real-time availability and pick the slot that suits you.</p></div>
+        <div><span class="num">3</span><h3>Drop off &amp; relax</h3><p>We'll send a photo when your pup is fresh, fluffy and ready to go home.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="tint">
+    <div class="container about">
+      <img src="/images/about-friends.jpg" alt="A corgi and a terrier trotting together down a path" loading="lazy">
+      <div>
+        <span class="eyebrow">Our promise</span>
+        <h2>Treated like family, every visit</h2>
+        <p>We started <span class="biz-name">Pawfect Grooming</span> because we wanted a place where dogs actually enjoy being groomed. That means slowing down, listening to what each dog is telling us, and never rushing to fit in one more appointment.</p>
+        <ul class="checklist">
+          <li>Health check of skin, ears, eyes and paws at every visit</li>
+          <li>We'll tell you about anything worth showing your vet</li>
+          <li>Notes on your dog's preferences saved for next time</li>
+          <li>Breed-standard cuts or exactly the look you want</li>
+        </ul>
+        <a href="#book" class="btn">Book your visit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="container">
+      <div class="section-title"><span class="eyebrow">Gallery</span><h2>Good dogs, great hair days</h2></div>
+      <div class="gallery">
+        <img src="/images/g-golden.jpg" alt="Golden retriever holding a plush toy" loading="lazy">
+        <img src="/images/g-corgi.jpg" alt="Corgi puppy against an orange background" loading="lazy">
+        <img src="/images/g-pug.jpg" alt="Black pug in a knitted sweater" loading="lazy">
+        <img src="/images/g-spaniel.jpg" alt="Cavalier King Charles spaniel peeking over a bed" loading="lazy">
+        <img src="/images/g-frenchie.jpg" alt="French bulldog against a green background" loading="lazy">
+        <img src="/images/g-street.jpg" alt="Happy black and white dog on a walk" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="tint">
+    <div class="container faq">
+      <div class="section-title"><span class="eyebrow">FAQ</span><h2>Good questions</h2></div>
+      <details><summary>How long will my dog be with you?</summary><p>Each service shows its usual length. Most dogs are ready within that time, and we'll send a photo the moment they're done so you're never left waiting.</p></details>
+      <details><summary>Does my dog need to be vaccinated?</summary><p>Yes. Please make sure your dog is up to date on core vaccinations (including rabies). Bring your records to the first visit.</p></details>
+      <details><summary>My dog is anxious or elderly. Can you help?</summary><p>Absolutely. Let us know in the booking notes. We'll take things slowly, offer breaks, and stop if your dog is too stressed. We never use sedatives.</p></details>
+      <details><summary>What if my dog's coat is matted?</summary><p>Mild tangles are part of the job. Heavy matting can take extra time and may mean a shorter clip for your dog's comfort. We'll always call you before doing anything that changes the price.</p></details>
+      <details><summary>What's your cancellation policy?</summary><p>Plans change, we get it. You can cancel online any time using your booking reference under “Manage my booking”. Please give us as much notice as you can so another pup can take the spot.</p></details>
+      <details><summary>How often should my dog be groomed?</summary><p>Most dogs do well every 4–8 weeks. Long or curly coats (Doodles, Poodles, Shih Tzus) usually need every 4–6 weeks to stay mat-free.</p></details>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="book">
+    <div class="container">
+      <div class="section-title"><span class="eyebrow">Book online</span><h2>Book an appointment</h2><p>Takes less than a minute.</p></div>
       <div class="booking card">
         <div class="steps" id="steps"><div></div><div></div><div></div><div></div></div>
 
@@ -118,16 +214,15 @@
     </div>
   </section>
 
-  <section id="manage">
-    <div class="container two-col">
+  <!-- MANAGE / HOURS / CONTACT -->
+  <section id="manage" class="tint">
+    <div class="container three-col">
       <div class="card">
         <h2>Manage my booking</h2>
         <p class="muted">Enter your reference and email to view or cancel.</p>
         <form id="lookupForm">
-          <div class="grid2">
-            <div class="field"><label for="lref">Reference</label><input id="lref" required style="text-transform:uppercase"></div>
-            <div class="field"><label for="lemail">Email</label><input id="lemail" type="email" required></div>
-          </div>
+          <div class="field"><label for="lref">Reference</label><input id="lref" required style="text-transform:uppercase"></div>
+          <div class="field"><label for="lemail">Email</label><input id="lemail" type="email" required></div>
           <button class="btn">Find booking</button>
         </form>
         <p class="error" id="lookupError"></p>
@@ -137,10 +232,22 @@
         <h2>Opening hours</h2>
         <ul class="hours-list" id="hoursList"></ul>
       </div>
+      <div class="card" id="contactCard">
+        <h2>Visit us</h2>
+        <ul class="contact-list" id="contactList"></ul>
+      </div>
     </div>
   </section>
 
-  <footer>© <span id="year"></span> <span class="biz-name">Pawfect Grooming</span> · <a href="/admin">Owner login</a></footer>
+  <section class="cta">
+    <div class="container">
+      <h2>Ready for a fresh, fluffy pup?</h2>
+      <p>Pick a time that works for you. It takes less than a minute.</p>
+      <a href="#book" class="btn big light">Book now</a>
+    </div>
+  </section>
+
+  <footer>© <span id="year"></span> <span class="biz-name">Pawfect Grooming</span> · <a href="/admin">Owner login</a> · <span class="muted">Photos from Unsplash</span></footer>
 
   <script src="/app.js"></script>
 </body>

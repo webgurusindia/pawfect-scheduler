@@ -141,11 +141,12 @@ function getAppointment(id) {
 app.get('/api/config', (req, res) => {
   const s = getSettings();
   res.json({ business_name: s.business_name, max_days_ahead: Number(s.max_days_ahead),
+    phone: s.phone || '', email: s.email || '', address: s.address || '',
     hours: db.prepare('SELECT * FROM business_hours ORDER BY weekday').all() });
 });
 
 app.get('/api/services', (req, res) => {
-  res.json(db.prepare('SELECT id, name, description, duration_min, price_cents FROM services WHERE active = 1 ORDER BY sort_order, id').all());
+  res.json(db.prepare('SELECT id, name, description, duration_min, price_cents, includes, image FROM services WHERE active = 1 ORDER BY sort_order, id').all());
 });
 
 app.get('/api/availability', wrap((req, res) => {
@@ -297,22 +298,24 @@ admin.get('/stats', (req, res) => {
 admin.get('/services', (req, res) => res.json(db.prepare('SELECT * FROM services ORDER BY sort_order, id').all()));
 function serviceFields(b) {
   const s = { name: str(b.name, 80), description: str(b.description, 500), duration_min: Number(b.duration_min),
-    price_cents: Math.round(Number(b.price_cents)), active: b.active === false || b.active === 0 ? 0 : 1, sort_order: Number(b.sort_order) || 0 };
+    price_cents: Math.round(Number(b.price_cents)), active: b.active === false || b.active === 0 ? 0 : 1, sort_order: Number(b.sort_order) || 0,
+    includes: str(b.includes, 2000), image: str(b.image, 300) };
   if (!s.name) throw new HttpError(400, 'Name is required');
+  if (s.image && !/^(\/images\/[\w.-]+|https:\/\/\S+)$/.test(s.image)) throw new HttpError(400, 'Image must be /images/<file> or an https:// link');
   if (!Number.isInteger(s.duration_min) || s.duration_min < 5 || s.duration_min > 600) throw new HttpError(400, 'Duration must be 5–600 minutes');
   if (!Number.isFinite(s.price_cents) || s.price_cents < 0) throw new HttpError(400, 'Invalid price');
   return s;
 }
 admin.post('/services', wrap((req, res) => {
   const s = serviceFields(req.body);
-  const r = db.prepare('INSERT INTO services (name, description, duration_min, price_cents, active, sort_order) VALUES (?,?,?,?,?,?)')
-    .run(s.name, s.description, s.duration_min, s.price_cents, s.active, s.sort_order);
+  const r = db.prepare('INSERT INTO services (name, description, duration_min, price_cents, active, sort_order, includes, image) VALUES (?,?,?,?,?,?,?,?)')
+    .run(s.name, s.description, s.duration_min, s.price_cents, s.active, s.sort_order, s.includes, s.image);
   res.status(201).json(db.prepare('SELECT * FROM services WHERE id = ?').get(r.lastInsertRowid));
 }));
 admin.put('/services/:id', wrap((req, res) => {
   const s = serviceFields(req.body);
-  const r = db.prepare('UPDATE services SET name=?, description=?, duration_min=?, price_cents=?, active=?, sort_order=? WHERE id=?')
-    .run(s.name, s.description, s.duration_min, s.price_cents, s.active, s.sort_order, Number(req.params.id));
+  const r = db.prepare('UPDATE services SET name=?, description=?, duration_min=?, price_cents=?, active=?, sort_order=?, includes=?, image=? WHERE id=?')
+    .run(s.name, s.description, s.duration_min, s.price_cents, s.active, s.sort_order, s.includes, s.image, Number(req.params.id));
   if (!r.changes) throw new HttpError(404, 'Not found');
   res.json(db.prepare('SELECT * FROM services WHERE id = ?').get(Number(req.params.id)));
 }));
@@ -355,12 +358,13 @@ admin.delete('/blocked/:date', (req, res) => {
 
 admin.get('/settings', (req, res) => res.json(getSettings()));
 admin.put('/settings', wrap((req, res) => {
-  const allowed = { business_name: 'str', slot_interval_min: [5, 240], capacity: [1, 20], min_notice_hours: [0, 720], max_days_ahead: [1, 365] };
+  const allowed = { business_name: 'str', phone: 'opt', email: 'opt', address: 'opt', slot_interval_min: [5, 240], capacity: [1, 20], min_notice_hours: [0, 720], max_days_ahead: [1, 365] };
   withTransaction(() => {
     for (const [k, rule] of Object.entries(allowed)) {
       if (req.body[k] === undefined) continue;
       let v = req.body[k];
       if (rule === 'str') { v = str(v, 80); if (!v) throw new HttpError(400, 'Business name required'); }
+      else if (rule === 'opt') v = str(v, 200);
       else { v = Number(v); if (!Number.isInteger(v) || v < rule[0] || v > rule[1]) throw new HttpError(400, `${k} must be ${rule[0]}–${rule[1]}`); }
       db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)').run(k, String(v));
     }
